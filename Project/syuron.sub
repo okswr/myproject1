@@ -1,1 +1,45 @@
+import Mathlib
 
+structure Point where
+  x : Int
+  y : Int
+
+def p : Point := { x := 3, y := 4 }
+
+example (P Q : Prop) : P ∧ Q → Q ∧ P := by
+  intro h
+  rcases h with ⟨hP, hQ⟩
+  constructor
+  · exact hQ
+  · exact hP
+
+example (P Q : Prop) (hPQ : P → Q) (hP : P) : Q := by
+  apply hPQ
+  exact hP
+
+example (P Q : Prop) (h : P ∨ Q) : Q ∨ P := by
+  refine Or.elim h ?_ ?_
+  · intro hP
+    exact Or.inr hP
+  · intro hQ
+    exact Or.inl hQ
+
+def twice (n : Nat) := n + n
+
+lemma twice_zero : twice 0 = 0 := by
+  unfold twice
+  simp
+
+example (n : Nat) : ∃ k : Nat, k = n + 2 := by
+  let m := n + 1
+  set k := m + 1 with hk
+  refine ⟨k, ?_⟩
+  have hm : m = n + 1 := rfl
+  rw [hk]
+
+example (n : Nat) : twice (n + 0) = n + n := by
+  change (n + 0) + (n + 0) = n + n
+  simp
+
+example (i j k : Nat) (h1 : i < j) (h2 : j < k) : i < k := by
+  grind
